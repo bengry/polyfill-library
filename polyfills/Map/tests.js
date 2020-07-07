@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+
 /* globals proclaim, Map, Symbol */
 
 it('is a function', function () {
@@ -481,6 +481,24 @@ describe('Map', function () {
 
 		o.set("", "test value");
 		proclaim.equal(o.get(""), 'test value');
+		
+		if (Object.create && Object.setPrototypeOf) {
+			function BaseClass() { // eslint-disable-line no-inner-declarations
+				// Empty class
+			}
+			function SubClass() { // eslint-disable-line no-inner-declarations
+				// Empty class
+			}
+			
+			SubClass.prototype = Object.create(BaseClass.prototype);
+			SubClass.prototype.constructor = SubClass;
+			Object.setPrototypeOf(SubClass, BaseClass);
+
+			o.set(BaseClass, "base class");
+			o.set(SubClass, "sub class");
+			proclaim.equal(o.get(BaseClass), "base class");
+			proclaim.equal(o.get(SubClass), "sub class");
+		}
 	});
 
 	it("implements .delete()", function () {
